@@ -8,6 +8,25 @@ consumer_secret = config('consumer_secret')
 access_token = config('access_token')
 access_token_secret = config('access_token_secret')
 twitter_handle = config('twitter_handle')
+enterprise_bearer_token = config('enterprise_bearer_token')
+
+engagement_post_body = {
+    "tweet_ids": [],
+      "engagement_types": [
+        "impressions",
+        "engagements",
+        "favorites",
+        "quote_tweets"
+    ],
+    "groupings": {
+      "grouping name": {
+        "group_by": [
+          "tweet.id",
+          "engagement.type"
+        ]
+      }
+    }
+  }
 
 def authenticate():
     # authorize
@@ -23,6 +42,11 @@ def extract_tweet_data(api, twitter_handle, timeframe):
                            tweet_mode = 'extended')
     #To do: implement engagement api to extract quote tweets, replies, video views, url link clicks, user profile clicks, engagements, impressions
     return tweets
+
+def get_engagement_metrics(list_of_ids):
+    # Getting the data using enterprise api
+    metrics_by_ids = []
+    return metrics_by_ids
 
 def process_tweet_data(tweets_json):
     #To add: quote tweets, replies, video views, url link clicks, user profile clicks, engagements, impressions
@@ -40,6 +64,10 @@ if __name__ == "__main__":
     api = authenticate()
     if api: print("Authentication succesful")
     tweets = extract_tweet_data(api, twitter_handle, 0)
+    if enterprise_bearer_token:
+        list_of_ids = []
+        metrics_by_ids = get_engagement_metrics(list_of_ids)
+        # add metrics to tweets json objects
     tweets_list_of_dicts = []
     for tweet in tweets:
         tweets_list_of_dicts.append(tweet._json)
@@ -50,6 +78,10 @@ if __name__ == "__main__":
         data = json.loads(json_string)
         process_tweet_data(data)
         print("Tweets processed")
+
+        #Store to SQL database
+
+        #Method for periodically adding new tweets
         
 
     
