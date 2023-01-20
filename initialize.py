@@ -1,14 +1,7 @@
 import tweepy
 import pandas as pd
 import json
-from decouple import config
-
-consumer_key = config('consumer_key')
-consumer_secret = config('consumer_secret')
-access_token = config('access_token')
-access_token_secret = config('access_token_secret')
-twitter_handle = config('twitter_handle')
-enterprise_bearer_token = config('enterprise_bearer_token')
+from config import TwitterConfig
 
 engagement_post_body = {
     "tweet_ids": [],
@@ -30,8 +23,8 @@ engagement_post_body = {
 
 def authenticate():
     # authorize
-    auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
-    auth.set_access_token(access_token, access_token_secret)
+    auth = tweepy.OAuthHandler(TwitterConfig.CONSUMER_KEY, TwitterConfig.CONSUMER_SECRET)
+    auth.set_access_token(TwitterConfig.ACCESS_TOKEN, TwitterConfig.ACCESS_TOKEN_SECRET)
     api = tweepy.API(auth)
     return api
 
@@ -57,14 +50,14 @@ def process_tweet_data(tweets_json):
               tweet["favorite_count"]] 
              for idx, tweet in enumerate(tweets_json)]
     df = pd.DataFrame(outtweets,columns=["id","created_at","retweet_count","favorite_count"])
-    df.to_csv('processed_data/%s_tweets.csv' % twitter_handle,index=False)
+    df.to_csv('processed_data/%s_tweets.csv' % TwitterConfig.TWITTER_HANDLE,index=False)
     return True
 
 if __name__ == "__main__":
     api = authenticate()
     if api: print("Authentication succesful")
-    tweets = extract_tweet_data(api, twitter_handle, 0)
-    if enterprise_bearer_token:
+    tweets = extract_tweet_data(api, TwitterConfig.TWITTER_HANDLE, 0)
+    if TwitterConfig.ENTERPRISE_BEARER_TOKEN:
         list_of_ids = []
         metrics_by_ids = get_engagement_metrics(list_of_ids)
         # add metrics to tweets json objects
