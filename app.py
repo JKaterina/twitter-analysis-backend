@@ -41,9 +41,9 @@ plot_freq_options = {
 
 # Sidebar settings
 
-date_options = data.Timestamp.dt.date.unique()
-start_date_option = st.sidebar.selectbox('Select Start Date', date_options, index=0)
-end_date_option = st.sidebar.selectbox('Select End Date', date_options, index=len(date_options)-1)
+# date_options = data.Timestamp.dt.date.unique()
+# start_date_option = st.sidebar.selectbox('Select Start Date', date_options, index=0)
+# end_date_option = st.sidebar.selectbox('Select End Date', date_options, index=len(date_options)-1)
 
 # Adding content and graphs
 
@@ -53,5 +53,5 @@ st.write('Data last loaded {}'.format(timestamp))
 col1, col2, col3 = st.beta_columns(3)
 
 col1.subheader('Likes per Tweet')
-plotdata = likes_per_tweet()
+plotdata = likes_per_tweet(data)
 col1.line_chart(plotdata)
