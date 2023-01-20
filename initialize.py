@@ -51,7 +51,7 @@ def get_engagement_metrics(list_of_ids):
     #return dict by id
     return metrics_by_ids
 
-def process_tweet_data(tweets_json):
+def process_tweet_data(tweets_json, engagement_metrics_by_id={}):
     #To add: quote tweets, replies, video views, url link clicks, user profile clicks, engagements, impressions
     timestamp = datetime.now()
     unix_timestamp = time.mktime(timestamp.timetuple())
@@ -63,6 +63,11 @@ def process_tweet_data(tweets_json):
     df = pd.DataFrame(outtweets,columns=["tweet_id","created_at","likes","retweets"])
     path = 'processed_data/{}_tweets_{}.csv '.format(TwitterConfig.TWITTER_HANDLE,unix_timestamp)
     df = df.reindex(columns=col_names, fill_value=0)
+    if engagement_metrics_by_id:
+      #routine to add engagement metrics before csv gets saved
+      for id, metrics in engagement_metrics_by_id.items():
+        for metric in metrics:
+          df[id][metric.key()] = metric.value()
     df.to_csv(path,index=False)
     return path
 

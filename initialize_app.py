@@ -17,14 +17,15 @@ def run():
         tweets_list_of_dicts.append(tweet._json)
     # if TwitterConfig.ENTERPRISE_API:
     #     list_of_ids = [tweet['id_str'] for tweet in tweets_list_of_dicts] #get list of ids from json
-    #     metrics_by_ids = get_engagement_metrics(list_of_ids)
-    #     # add metrics to tweets json objects 
+    #     engagement_metrics_by_id = get_engagement_metrics(list_of_ids)
+    else:
+        engagement_metrics_by_id = []
     if tweets: print("Tweets extracted")
     with open('raw_data/tweets.json', 'w') as file:
         json_string = json.dumps(tweets_list_of_dicts, indent=4)
         file.write(json_string)  
         data = json.loads(json_string)
-        csv_path = process_tweet_data(data)
+        csv_path = process_tweet_data(data, engagement_metrics_by_id)
         print("Tweets processed")
 
     #Store historic tweets to SQL database
