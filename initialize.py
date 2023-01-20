@@ -58,9 +58,10 @@ def process_tweet_data(tweets_json, engagement_metrics_by_id={}):
     outtweets = [[tweet["id_str"],
               datetime.strftime(datetime.strptime(tweet["created_at"],'%a %b %d %H:%M:%S +0000 %Y'), '%Y-%m-%d %H:%M:%S'),
               tweet["retweet_count"],
-              tweet["favorite_count"]] 
+              tweet["favorite_count"],
+              tweet['entities']['hashtags']]
              for idx, tweet in enumerate(tweets_json)]
-    df = pd.DataFrame(outtweets,columns=["tweet_id","created_at","likes","retweets"])
+    df = pd.DataFrame(outtweets,columns=["tweet_id","created_at","likes","retweets","hashtags"])
     path = 'processed_data/{}_tweets_{}.csv '.format(TwitterConfig.TWITTER_HANDLE,unix_timestamp)
     df = df.reindex(columns=col_names, fill_value=0)
     if engagement_metrics_by_id:

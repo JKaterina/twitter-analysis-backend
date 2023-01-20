@@ -1,5 +1,3 @@
-import os, logging, datetime, argparse
-from logging.handlers import RotatingFileHandler
 from config import DBConfig, TwitterConfig
 from models import col_names
 from initialize import *

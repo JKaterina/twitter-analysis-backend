@@ -1,9 +1,12 @@
+import ast
+import json
 import sqlite3
 import streamlit as st
 import pandas as pd
 import numpy as np
 from config import DBConfig
 import datetime
+from collections import Counter
 
 @st.cache(allow_output_mutation=True, show_spinner=False)
 def get_connection():
@@ -39,6 +42,12 @@ def likes_per_tweet(df):
 def retweets_per_tweet(df):
     return df['Retweets']
 
+@st.cache(show_spinner=False)
+def top_hashtags(df,n):
+    hashtags = [[hashtag['text'] for hashtag in ast.literal_eval(tweet)] for tweet in df['Hashtags'].values]
+    counts = Counter(list(np.concatenate(hashtags).flat)).most_common(n)
+    return counts
+
 # App settings
 st.set_page_config(layout="wide", page_title='Tweets Dashboard')
 
@@ -60,7 +69,7 @@ end_date_option = st.sidebar.selectbox('Select End Date', date_options, index=le
 
 st.write('Total tweet count: {}'.format(data.shape[0]))
 st.write('Data last loaded {}'.format(timestamp))
-
+st.write('Top Hashtags: {}'.format(top_hashtags(data,5)))
 col1, col2, col3 = st.columns(3)
 
 col1.subheader('Likes per Tweet')
