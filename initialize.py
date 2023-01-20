@@ -8,7 +8,6 @@ from models import col_names
 
 import gnip_insights_interface.engagement_api as engagement_api
 
-
 engagement_post_body = {
     "tweet_ids": [],
       "engagement_types": [
@@ -27,6 +26,7 @@ engagement_post_body = {
     }
   }
 
+#function to authenticate tweepy for API access
 def authenticate():
     # authorize
     auth = tweepy.OAuthHandler(TwitterConfig.CONSUMER_KEY, TwitterConfig.CONSUMER_SECRET)
@@ -34,14 +34,15 @@ def authenticate():
     api = tweepy.API(auth)
     return api
 
+#function to extract tweet data using a given authenticated api connection and twitter_handle, returns tweets in json string format
 def extract_tweet_data(api, twitter_handle, timeframe):
     tweets = api.user_timeline(screen_name=twitter_handle, 
                            count=200,
                            include_rts = True,
                            tweet_mode = 'extended')
-    #To do: implement engagement api to extract quote tweets, replies, video views, url link clicks, user profile clicks, engagements, impressions
     return tweets
 
+#function to get engagement metric from engagement api using gnip_insights_interface
 def get_engagement_metrics(list_of_ids):
     # Getting the data using enterprise api
     engagement_post_body['tweet_ids'] = list_of_ids
@@ -51,6 +52,7 @@ def get_engagement_metrics(list_of_ids):
     #return dict by id
     return metrics_by_ids
 
+#function to process json data, extract relevant data and store to csv. returns path to csv
 def process_tweet_data(tweets_json, engagement_metrics_by_id={}):
     #To add: quote tweets, replies, video views, url link clicks, user profile clicks, engagements, impressions
     timestamp = datetime.now()

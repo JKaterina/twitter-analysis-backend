@@ -60,7 +60,6 @@ plot_freq_options = {
 }
 
 # Sidebar settings
-
 date_options = data.Timestamp.dt.date.unique()
 start_date_option = st.sidebar.selectbox('Select Start Date', date_options, index=0)
 end_date_option = st.sidebar.selectbox('Select End Date', date_options, index=len(date_options)-1)
