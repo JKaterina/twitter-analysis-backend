@@ -8,6 +8,8 @@ from sqlalchemy import create_engine
 import pandas as pd
 import sqlite3
 
+ENTERPRISE_ACCESS = False
+
 def run():
     api = authenticate()
     if api: print("Authentication succesful")
@@ -15,9 +17,9 @@ def run():
     tweets_list_of_dicts = []
     for tweet in tweets:
         tweets_list_of_dicts.append(tweet._json)
-    # if TwitterConfig.ENTERPRISE_API:
-    #     list_of_ids = [tweet['id_str'] for tweet in tweets_list_of_dicts] #get list of ids from json
-    #     engagement_metrics_by_id = get_engagement_metrics(list_of_ids)
+    if ENTERPRISE_ACCESS:
+        list_of_ids = [tweet['id_str'] for tweet in tweets_list_of_dicts] #get list of ids from json
+        engagement_metrics_by_id = get_engagement_metrics(list_of_ids)
     else:
         engagement_metrics_by_id = []
     if tweets: print("Tweets extracted")
