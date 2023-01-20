@@ -41,7 +41,14 @@ def extract_tweet_data(api, twitter_handle, timeframe):
 
 def get_engagement_metrics(list_of_ids):
     # Getting the data using enterprise api
-    metrics_by_ids = []
+    engagement_post_body['tweet_ids'] = list_of_ids
+    engagement_post_body['engagement_types'] = ['impressions','engagements','favorites','quote_tweets','replies','video_views','url_clicks','user_profile_clicks','engagements']
+    api_request = engagement_post_body
+    #authenticate
+
+    #make request
+
+    #return dict by id
     return metrics_by_ids
 
 def process_tweet_data(tweets_json):
