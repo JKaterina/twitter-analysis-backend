@@ -1,5 +1,6 @@
 import os, logging, datetime
 from logging.handlers import RotatingFileHandler
+import sqlite3
 from config import TwitterConfig
 from stream_tweets import TweetListener
 from tweepy import Stream
@@ -12,13 +13,13 @@ log_name = 'streaming_{}.log'.format(datetime.date.today().strftime('%Y%m%d'))
 log_handler = RotatingFileHandler(filename=os.path.join(log_dir, log_name), maxBytes=20000, backupCount=5)
 logging.basicConfig(handlers=[log_handler], level=logging.INFO,
                     format="[%(asctime)s] %(levelname)s [%(name)s.%(funcName)s:%(lineno)d] %(message)s",
-                    datefmt='%Y-%m-%dT%H:%M:%S')
+                    datefmt='%Y-%m-%dT%H:%M:%S') 
 
 def run():
-    auth = OAuthHandler(TwitterConfig.CONSUMER_KEY, TwitterConfig.CONSUMER_SECRET)
-    auth.set_access_token(TwitterConfig.ACCESS_TOKEN, TwitterConfig.ACCESS_TOKEN_SECRET)
-    listener = TweetListener(TwitterConfig.TWITTER_HANDLE)
-    stream = Stream(auth, listener)
+    # auth = OAuthHandler(TwitterConfig.CONSUMER_KEY, TwitterConfig.CONSUMER_SECRET)
+    # auth.set_access_token(TwitterConfig.ACCESS_TOKEN, TwitterConfig.ACCESS_TOKEN_SECRET)
+    listener = TweetListener(TwitterConfig.CONSUMER_KEY, TwitterConfig.CONSUMER_SECRET, TwitterConfig.ACCESS_TOKEN, TwitterConfig.ACCESS_TOKEN_SECRET)
+    listener.sample()
     logging.info('Starting stream for {}'.format(TwitterConfig.TWITTER_HANDLE))
     logging.info('Stream closed')
 

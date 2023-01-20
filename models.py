@@ -20,7 +20,7 @@ col_names = ['tweet_id',
 class Tweet(Base):
     __tablename__ = 'tweets'
     tweet_id = Column(Integer, primary_key=True)
-    created_at = Column(DateTime, secondary_key=True)
+    created_at = Column(DateTime)
     likes = Column(Integer)
     impressions = Column(Integer)
     engagement_rate = Column(Float)
