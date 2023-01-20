@@ -8,8 +8,8 @@ class TwitterConfig:
     ACCESS_TOKEN = config('ACCESS_TOKEN')
     ACCESS_TOKEN_SECRET = config('ACCESS_TOKEN_SECRET')
     TWITTER_HANDLE = config('TWITTER_HANDLE')
-    # this token comes from the registration with Twitter Engagement API
-    ENTERPRISE_BEARER_TOKEN = config('ENTERPRISE_BEARER_TOKEN')
+    # set to true if enterprise credentials exist
+    ENTERPRISE_API = config('ENTERPRISE_API')
 
 class DBConfig:
     DB_USER = config('DB_USER')

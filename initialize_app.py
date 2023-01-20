@@ -2,29 +2,29 @@ import os, logging, datetime, argparse
 from logging.handlers import RotatingFileHandler
 from config import DBConfig, TwitterConfig
 from models import col_names
-import initialize as ini
+from initialize import *
 import json
 from sqlalchemy import create_engine
 import pandas as pd
 import sqlite3
 
 def run():
-    api = ini.authenticate()
+    api = authenticate()
     if api: print("Authentication succesful")
-    tweets = ini.extract_tweet_data(api, TwitterConfig.TWITTER_HANDLE, 0)
+    tweets = extract_tweet_data(api, TwitterConfig.TWITTER_HANDLE, 0)
     tweets_list_of_dicts = []
     for tweet in tweets:
         tweets_list_of_dicts.append(tweet._json)
-    if TwitterConfig.ENTERPRISE_BEARER_TOKEN:
-            list_of_ids = []
-            metrics_by_ids = ini.get_engagement_metrics(list_of_ids)
-            # add metrics to tweets json objects 
+    # if TwitterConfig.ENTERPRISE_API:
+    #     list_of_ids = [tweet['id_str'] for tweet in tweets_list_of_dicts] #get list of ids from json
+    #     metrics_by_ids = get_engagement_metrics(list_of_ids)
+    #     # add metrics to tweets json objects 
     if tweets: print("Tweets extracted")
     with open('raw_data/tweets.json', 'w') as file:
         json_string = json.dumps(tweets_list_of_dicts, indent=4)
         file.write(json_string)  
         data = json.loads(json_string)
-        csv_path = ini.process_tweet_data(data)
+        csv_path = process_tweet_data(data)
         print("Tweets processed")
 
     #Store historic tweets to SQL database

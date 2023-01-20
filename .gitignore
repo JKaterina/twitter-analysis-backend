@@ -1,3 +1,4 @@
 .env
 __pychache__
 Logs
+.twitter_api_creds

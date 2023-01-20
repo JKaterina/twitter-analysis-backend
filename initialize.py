@@ -6,6 +6,9 @@ import time
 from config import TwitterConfig
 from models import col_names
 
+import gnip_insights_interface.engagement_api as engagement_api
+
+
 engagement_post_body = {
     "tweet_ids": [],
       "engagement_types": [
@@ -33,7 +36,7 @@ def authenticate():
 
 def extract_tweet_data(api, twitter_handle, timeframe):
     tweets = api.user_timeline(screen_name=twitter_handle, 
-                           count=200,
+                           count=10,
                            include_rts = True,
                            tweet_mode = 'extended')
     #To do: implement engagement api to extract quote tweets, replies, video views, url link clicks, user profile clicks, engagements, impressions
@@ -43,11 +46,8 @@ def get_engagement_metrics(list_of_ids):
     # Getting the data using enterprise api
     engagement_post_body['tweet_ids'] = list_of_ids
     engagement_post_body['engagement_types'] = ['impressions','engagements','favorites','quote_tweets','replies','video_views','url_clicks','user_profile_clicks','engagements']
-    api_request = engagement_post_body
-    #authenticate
-
     #make request
-
+    engagement_api.query_tweets(engagement_post_body['tweet_ids'],['tweet_id','engagement_type'],'totals',engagement_post_body['engagement_types'],25,)
     #return dict by id
     return metrics_by_ids
 
@@ -70,8 +70,8 @@ if __name__ == "__main__":
     api = authenticate()
     if api: print("Authentication succesful")
     tweets = extract_tweet_data(api, TwitterConfig.TWITTER_HANDLE, 0)
-    if TwitterConfig.ENTERPRISE_BEARER_TOKEN:
-        list_of_ids = []
+    if TwitterConfig.ENTERPRISE_API:
+        list_of_ids = [tweet['id_str'] for tweet in tweets] #get list of ids from json
         metrics_by_ids = get_engagement_metrics(list_of_ids)
         # add metrics to tweets json objects
     tweets_list_of_dicts = []
@@ -84,10 +84,6 @@ if __name__ == "__main__":
         data = json.loads(json_string)
         process_tweet_data(data)
         print("Tweets processed")
-
-        #Store to SQL database
-
-        #Method for periodically adding new tweets
         
 
     
