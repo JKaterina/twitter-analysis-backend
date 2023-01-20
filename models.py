@@ -1,6 +1,22 @@
 from sqlalchemy import Column, Integer, String, DateTime, Boolean, Float
 from database import Base
 
+col_names = ['tweet_id',
+        'created_at',
+        'likes',
+        'impressions',
+        'engagement_rate',
+        'retweets',
+        'quote_tweets',
+        'replies',
+        'link_clicks',
+        'video_views',
+        'profile_clicks',
+        'hashtags',
+        'pc_likes',
+        'pc_impressions',
+        'pc_engagement_rate']
+
 class Tweet(Base):
     __tablename__ = 'tweets'
     tweet_id = Column(Integer, primary_key=True)

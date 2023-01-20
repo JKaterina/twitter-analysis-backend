@@ -1,19 +1,18 @@
+import sqlite3
 import streamlit as st
 import pandas as pd
 import numpy as np
 from config import DBConfig
-from sqlalchemy import create_engine
 import datetime
 
 @st.cache(allow_output_mutation=True, show_spinner=False)
 def get_connection():
-    return create_engine('mysql+pymysql://{}:{}@{}/twitter_sqlalc'.format(DBConfig.DB_USER, DBConfig.DB_PWORD, DBConfig.DB_HOST),
-                         convert_unicode=True)
+    return sqlite3.connect("data/twitter_data.sqlite", check_same_thread=False)
 
 @st.cache(allow_output_mutation=True, show_spinner=True, ttl=6*60)
 def get_data_from_sql():
     timestamp = datetime.datetime.now().strftime('%d/%m/%Y %H:%M:%S')
-    df = pd.read_sql_table('tweets', get_connection())
+    df = pd.read_sql_query("SELECT * from tweets", get_connection())
     df = df.rename(columns={'tweet_id': 'Tweet', 'created_at': 'Timestamp',
                             'likes': 'Likes', 'impressions': 'Impressions',
                             'engagement_rate': 'Engagement Rate', 'retweets': 'Retweets',

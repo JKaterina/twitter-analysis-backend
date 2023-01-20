@@ -1,9 +1,10 @@
 import tweepy
 import pandas as pd
 import json
-import datetime
+from datetime import datetime
 import time
 from config import TwitterConfig
+from models import col_names
 
 engagement_post_body = {
     "tweet_ids": [],
@@ -45,15 +46,16 @@ def get_engagement_metrics(list_of_ids):
 
 def process_tweet_data(tweets_json):
     #To add: quote tweets, replies, video views, url link clicks, user profile clicks, engagements, impressions
-    timestamp = datetime.datetime.now()
+    timestamp = datetime.now()
     unix_timestamp = time.mktime(timestamp.timetuple())
     outtweets = [[tweet["id_str"],
-              datetime(tweet["created_at"]),
+              datetime.strftime(datetime.strptime(tweet["created_at"],'%a %b %d %H:%M:%S +0000 %Y'), '%Y-%m-%d %H:%M:%S'),
               tweet["retweet_count"],
               tweet["favorite_count"]] 
              for idx, tweet in enumerate(tweets_json)]
-    df = pd.DataFrame(outtweets,columns=["id","created_at","retweet_count","favorite_count"])
+    df = pd.DataFrame(outtweets,columns=["tweet_id","created_at","likes","retweets"])
     path = 'processed_data/{}_tweets_{}.csv '.format(TwitterConfig.TWITTER_HANDLE,unix_timestamp)
+    df = df.reindex(columns=col_names, fill_value=0)
     df.to_csv(path,index=False)
     return path
 
