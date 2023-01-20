@@ -21,12 +21,23 @@ def get_data_from_sql():
                             'profile_clicks': 'Profile Clicks', 'hashtags': 'Hashtags',
                             'pc_likes' : 'Change in Likes', 'pc_impressions':'Change in Impressions',
                             'pc_engagement_rate': 'Change in Engagement Rate' })
+    df['Timestamp'] = pd.to_datetime(df['Timestamp'])
+    df = df.sort_values(by='Timestamp')
     return df, timestamp
+
+@st.cache(show_spinner=False)
+def filter_by_date(df, start_date, end_date):
+    df_filtered = df.loc[(df.Timestamp.dt.date >= start_date) & (df.Timestamp.dt.date <= end_date)]
+    return df_filtered
 
 # Graph models
 @st.cache(show_spinner=False)
 def likes_per_tweet(df):
     return df['Likes']
+
+@st.cache(show_spinner=False)
+def retweets_per_tweet(df):
+    return df['Retweets']
 
 # App settings
 st.set_page_config(layout="wide", page_title='Tweets Dashboard')
@@ -41,17 +52,21 @@ plot_freq_options = {
 
 # Sidebar settings
 
-# date_options = data.Timestamp.dt.date.unique()
-# start_date_option = st.sidebar.selectbox('Select Start Date', date_options, index=0)
-# end_date_option = st.sidebar.selectbox('Select End Date', date_options, index=len(date_options)-1)
+date_options = data.Timestamp.dt.date.unique()
+start_date_option = st.sidebar.selectbox('Select Start Date', date_options, index=0)
+end_date_option = st.sidebar.selectbox('Select End Date', date_options, index=len(date_options)-1)
 
 # Adding content and graphs
 
 st.write('Total tweet count: {}'.format(data.shape[0]))
 st.write('Data last loaded {}'.format(timestamp))
 
-col1, col2, col3 = st.beta_columns(3)
+col1, col2, col3 = st.columns(3)
 
 col1.subheader('Likes per Tweet')
 plotdata = likes_per_tweet(data)
 col1.line_chart(plotdata)
+
+col2.subheader('Retweets per Tweet')
+plotdata = retweets_per_tweet(data)
+col2.line_chart(plotdata)

@@ -33,7 +33,7 @@ def authenticate():
 
 def extract_tweet_data(api, twitter_handle, timeframe):
     tweets = api.user_timeline(screen_name=twitter_handle, 
-                           count=2,
+                           count=200,
                            include_rts = True,
                            tweet_mode = 'extended')
     #To do: implement engagement api to extract quote tweets, replies, video views, url link clicks, user profile clicks, engagements, impressions
